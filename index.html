@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" 
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" 
+    crossorigin="anonymous">
+    <title>GuessGame</title>
+    <style>
+        form{
+            padding: 50px 0;
+            text-align: center;
+        }
+        .hintContainer{
+            display: flex;
+            justify-content: space-evenly;
+        }
+        h1{
+            text-align: center;
+            font-weight: bold;
+            font-size: 54px;
+        }
+        .form-control{
+            text-align: center;
+        }
+        .alert{
+            text-align: center;
+        }
+        .alert-primary{
+            display: none;
+        }
+        #reset{
+            cursor: pointer;
+        }
+        .show{
+            display: block;
+        }
+        .myrow{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #emailHelp{
+            color: white;
+        }
+
+
+
+        body{
+            margin: 0;
+            width: 100%;
+            height: 100vh;
+            font-family: "Exo", sans-serif;
+            color: #fff;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="myrow">
+            <div class="col-sm-8">
+
+                <h1>GuessGame!</h1>
+
+                <form>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="inputbox" placeholder="Guess Here">
+                        <small id="emailHelp" class="form-text">Guess a number between 1-100</small>
+                    </div>
+
+                    <button type="submit" id="submit" class="btn btn-primary">Submit</button>
+                </form>
+
+                <div class="alert-danger" role="alert" id="hint"></div>
+
+                <div class= "hintContainer" id="hintContainer">
+                        <div class="alert alert-secondary" role="alert"> Guess: <span id="guess">00</span> </div>
+                        <div class="alert alert-primary" role="alert" id="reset">Reset</div>
+                        <div class="alert alert-warning" role="alert"> Life Left: <span id="life">10</span> </div>
+                </div>
+    
+            </div>
+        </div>
+    </div>
+    
+
+    <script>
+        const inputBox = document.getElementById("inputbox");
+        const submitButton = document.getElementById("submit");
+        const hint = document.getElementById("hint");
+        const guessBox = document.getElementById("guess");
+        const lifeBox = document.getElementById("life");
+        const resetButton = document.getElementById("reset");
+        
+        let userSubmission = null;
+        let guess = 0;
+        let life = 10;
+        let random = Math.floor(Math.random()*100);
+        console.log(random)
+
+        inputBox.addEventListener("change",(e)=>handleChange(e));
+        submitButton.addEventListener("click",(e)=>handleSubmit(e));
+        resetButton.addEventListener("click",(e)=>reset(e));
+        
+        const handleChange = (e) =>{
+            userSubmission = parseInt(e.target.value) ;
+            e.target.value = "";
+        }
+
+        const handleSubmit = (e) => {
+            e.preventDefault();
+            gameEngine();
+        }
+
+        const reset = () =>{
+            guess = 0;
+            life= 10;
+            random = Math.floor(Math.random()*100);
+            guessBox.innerText = guess;
+            lifeBox.innerText = life;
+            resetButton.classList.remove("show");
+            hint.innerText = "";
+            hint.classList.remove("alert");
+            hint.classList.add("alert-danger");
+            hint.classList.remove("alert-success");
+        }
+
+
+        const gameEngine = () =>{
+            
+            hint.classList.add("alert");
+
+            if(isNaN(userSubmission)){
+                hint.innerText = ("Not a number!");
+            }else{
+
+                guess ++;
+                life--;
+                guessBox.innerText = guess;
+                lifeBox.innerText = life;
+                if(life>=1){
+                    if(userSubmission===random){
+
+                        hint.classList.remove("alert-danger");
+                        hint.classList.add("alert-success");
+                        hint.innerText = ("Correct! You Won!");
+                        resetButton.classList.add("show");
+
+                    }else if(userSubmission<random){
+                        hint.innerText =("guess higher");
+                    }else{
+                        hint.innerText =("guess lower");
+                    }
+                }else{
+
+                    hint.innerText = ("Game Over! Your Ran Out Of Lives");
+                    resetButton.classList.add("show");
+                }
+            }
+        }
+
+    </script>
+
+</body>
+</html>
